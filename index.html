@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Santa</title>
+</head>
+<body style="height: 100vh; background: #111; text-align: center;">
+
+    <canvas id="c" width="500" height="500">
+
+
+    </canvas>
+    <script>
+        context = c.getContext('2d');   
+        const santa =new Image();
+        santa.src = "img/santa.png"
+        santaX = santaDY = score = bestScore = 0;
+        santaSize = 100;
+        pipeWidth = topPipBottomY = 50;
+        interval = 25;
+        santaY = pipeGap = 200;
+        canvasSize = pipeX = 500;
+        c.onclick = () => { santaDY = 8 }
+        setInterval(() => {
+            context.fillStyle = "skyblue";
+            context.fillRect(0, 0, canvasSize, canvasSize); //Draw sky
+            santaY -= santaDY -= 0.5; //Gravity
+            context.drawImage(santa, santaX, santaY, santaSize, santaSize); //Draw santa
+            context.fillStyle = "brown"
+            pipeX -= 10; //Move pipe
+            pipeX < -pipeWidth && ((pipeX = canvasSize), (topPipBottomY = pipeGap * Math.random()))
+            //reset pipe and random pipe gap
+            context.fillRect(pipeX, 0, pipeWidth, topPipBottomY); // Draw top pipe
+            context.fillRect(pipeX, topPipBottomY + pipeGap, pipeWidth, canvasSize); // Draw top pipe
+            context.fillStyle = "black";
+            context.fillText(score++, 10, 15); //Increase and draw score
+            bestScore = bestScore < score ? score : bestScore; // New best score
+            context.fillText (`Best: ${bestScore}`, 10, 25); // Best score
+            (((santaY < topPipBottomY || santaY > topPipBottomY + pipeGap) && pipeX < santaSize) // Santa hit pipe
+            || santaY > canvasSize) && //Santa falls of screen
+            ((santaDY = 0), (santaY = 200), (pipeX = canvasSize), (score = 0));
+        }, interval)
+    </script>
+    
+</body>
+</html>
